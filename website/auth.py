@@ -9,6 +9,9 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/sign-up', methods=["GET", "POST"])
 def sign_up():
+    if current_user.is_authenticated:
+        return redirect(url_for('views.collection'))
+
     if request.method == 'POST':
         username = request.form.get('username')
         pass1 = request.form.get('password1')
@@ -42,6 +45,9 @@ def sign_up():
 
 @auth.route('/login', methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('views.collection'))
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')

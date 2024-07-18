@@ -8,7 +8,7 @@ DB_NAME = "game_collection.db"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'FD8hf8d8yfdas*F89dfhsd*FT&DhFDhxy7^#$9cvhd7^DD^Fh3ud87&DF'
+    app.config['SECRET_KEY'] = 'FD8hf8d8yfdas*F89dfhsd*FT&DhFD^Fh3ud87&DF'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
 
@@ -26,6 +26,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    login_manager.login_message_category = 'error'
 
     @login_manager.user_loader
     def load_user(id_num):
