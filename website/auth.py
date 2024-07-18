@@ -40,7 +40,7 @@ def sign_up():
             flash('Succesfully created account!', category='success')
             return redirect(url_for('auth.login'))
 
-    return render_template("sign_up.html", user=current_user)
+    return render_template("sign_up.html")
 
 
 @auth.route('/login', methods=["GET", "POST"])
@@ -63,7 +63,7 @@ def login():
         else:
             flash('Username does not exist', category='error')
 
-    return render_template("login.html", user=current_user)
+    return render_template("login.html")
 
 
 @auth.route('/logout')
