@@ -2,4 +2,25 @@
 {% block title %}Collection{% endblock %}
 {% block content %}
 <h1>This is the collection page</h1>
+<table id="my_games_table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Release Year</th>
+            <th>Platform</th>
+            <th>Delete</th>
+            <th>Edit</th>
+    </thead>
+    <tbody>
+        {% for game in current_user.games %}
+        <tr data-value=""> 
+            <td>{{ game.title }}</td>
+            <td>{{ game.year }}</td>
+            <td>{{ game.platform }}</td>
+            <td><button id="delete-button" onclick=""><i class="bi bi-trash"></i></button></td>
+            <td><button id="edit-button" onclick=""><i class="bi bi-pencil"></i></button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

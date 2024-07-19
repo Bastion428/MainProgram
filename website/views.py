@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session
 from flask_login import login_required
+from .models import User, MyGame
 
 views = Blueprint('views', __name__)
 
