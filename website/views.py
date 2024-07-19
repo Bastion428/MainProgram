@@ -12,10 +12,21 @@ def collection():
     return render_template('collection.html')
 
 
-@views.route('/my-game')
+@views.route('/my-game', methods=["GET", "POST"])
 @login_required
 def my_game():
-    return render_template('my_game.html')
+    if request.method == "GET":
+        flash('No game has been specified. Please choose one from your collection.', category='error')
+        return redirect(url_for('views.collection'))
+
+    game_id = request.form.get('id')
+    game = MyGame.query.get(game_id)
+
+    if current_user.id != game.user_id:
+        flash('You are not authorized to view this game.', category='error')
+        return redirect(url_for('views.collection'))
+
+    return render_template('my_game.html', game=game)
 
 @views.route('/add-game', methods=["GET", "POST"])
 @login_required

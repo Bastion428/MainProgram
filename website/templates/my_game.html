@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }}{% endblock %}
+{% block content %}
+<h1 align="center">{{ game.title }}</h1>
+<table id="detail_games_table" align="center">
+    <thead>
+        <tr>
+            <th>Release Year</th>
+            <th>Platform</th>
+            <th>Developer</th>
+            <th>Publisher</th>
+            <th>Hours Played</th>
+            <th>Score</th>
+            <th>Own</th>
+            <th>Beaten</th>
+            <th>Review</th>
+    </thead>
+    <tbody>
+        <tr> 
+            <td>{{ game.year }}</td>
+            <td>{{ game.platform }}</td>
+            <td>{{ game.developer }}</td>
+            <td>{{ game.publisher }}</td>
+            <td>{{ game.play_hours }}</td>
+            <td>{{ game.score }}/10</td>
+            <td>{{ game.own }}</td>
+            <td>{{ game.beat }}</td>
+            <td>{{ game.review }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

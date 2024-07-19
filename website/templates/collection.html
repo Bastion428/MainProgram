@@ -13,8 +13,13 @@
     </thead>
     <tbody>
         {% for game in current_user.games %}
-        <tr data-value=""> 
-            <td><a href="#">{{ game.title }}</a></td>
+        <tr data-value="">      
+        <td><form method="post" action="/my-game" class="inline">
+            <input type="hidden" name="id" value={{ game.id }}>
+            <button type="submit" value="submit_value" class="link-button">
+            {{ game.title }}
+            </button>
+        </form></td>
             <td>{{ game.year }}</td>
             <td>{{ game.platform }}</td>
             <td><button id="delete-button" onclick=""><i class="bi bi-trash"></i></button></td>
