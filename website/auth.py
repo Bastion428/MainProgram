@@ -32,11 +32,10 @@ def sign_up():
             flash('Username must be 6 characters or more', category='error')
             error = True
         if not error:
-            new_user = User(username=username,  # type: ignore[call-arg]
-                            password=generate_password_hash(pass1, method='pbkdf2:sha256'))  # type: ignore[call-arg]
+            password = generate_password_hash(pass1, method='pbkdf2:sha256')
+            new_user = User(username=username, password=password)
             db.session.add(new_user)
             db.session.commit()
-            login_user(user, remember=True)
             flash('Succesfully created account!', category='success')
             return redirect(url_for('auth.login'))
 

@@ -9,7 +9,7 @@ class MyGame(db.Model):
     platform = db.Column(db.String(100), nullable=False)
     developer = db.Column(db.String(100))
     publisher = db.Column(db.String(100))
-    image = db.Column(db.String(1000))
+    score = db.Column(db.Integer)
     play_hours = db.Column(db.Integer)
     own = db.Column(db.Boolean)
     beat = db.Column(db.Boolean)

@@ -14,7 +14,7 @@
     <tbody>
         {% for game in current_user.games %}
         <tr data-value=""> 
-            <td>{{ game.title }}</td>
+            <td><a href="#">{{ game.title }}</a></td>
             <td>{{ game.year }}</td>
             <td>{{ game.platform }}</td>
             <td><button id="delete-button" onclick=""><i class="bi bi-trash"></i></button></td>
