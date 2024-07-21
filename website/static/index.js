@@ -31,13 +31,13 @@ function deleteGame(ID) {
     let table = document.getElementById("my_games_table");
   
     if (table === null) {
-      return;
+        window.location.href = "/";
     }
     for (let i = 0, row; row = table.rows[i]; i++) {
       // Looks through Clients UI table for row with matching clientID
-      if (table.rows[i].getAttribute("data-value") == ID) {
-          table.deleteRow(i);
-          break;
+        if (table.rows[i].getAttribute("data-value") == ID) {
+            table.deleteRow(i);
+            break;
       }
     }
   }

@@ -16,7 +16,7 @@ def collection():
 @login_required
 def my_game(title):
     if request.method == "GET":
-        flash('No game has been specified. Please choose one from your collection.', category='error')
+        flash('Please choose a game directly from your collection.', category='error')
         return redirect(url_for('views.collection'))
 
     game_id = request.form.get('id')
@@ -82,7 +82,13 @@ def delete_game():
         if game.user_id == current_user.id:
             db.session.delete(game)
             db.session.commit()
+            flash("Game successfully deleted", category='success')
             return make_response("Success", 204)
-        return make_response("Error", 400)
+        else:
+            flash("Not authorized to delete this game!", category='error')
+    else:
+        flash("Game not in your collection and unable to be deleted", category='error')
+
+    return make_response("Error", 400)
 
     
