@@ -1,10 +1,11 @@
-function deleteGame(ID) {
+function deleteGame(ID, location) {
     /*
       Deletes the client with the given ID (clientID) from the database and Clients table
     */
     let link = '/delete-game';
     let data = {
-      game_id: ID
+      game_id: ID,
+      req_loc: location
     };
   
     if (!confirm("Are you sure you want to delete this game?")) {

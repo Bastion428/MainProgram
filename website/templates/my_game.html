@@ -29,5 +29,6 @@
         </tr>
     </tbody>
 </table>
-<button id="delete-button" onclick="deleteGame({{ game.id }})"><i class="bi bi-trash"></i></button>
+<button id="delete-button" onclick="deleteGame('{{ game.id }}', '{{ url_for(request.endpoint, **request.view_args) }}')">
+    <i class="bi bi-trash"></i></button>
 {% endblock %}

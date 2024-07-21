@@ -57,11 +57,17 @@ def add_game():
             flash('Game already in your collection', category='error')
             error = True
         if not error:
-            new_game = MyGame(title=title, year=year,
-                              platform=platform, developer=developer,
-                              publisher=publisher, play_hours=hours,
-                              score=score, own=own, beat=beat,
-                              review=review, user_id=current_user.id
+            new_game = MyGame(title=title, 
+                              year=year,
+                              platform=platform, 
+                              developer=developer,
+                              publisher=publisher, 
+                              play_hours=hours,
+                              score=score, 
+                              own=own, 
+                              beat=beat,
+                              review=review, 
+                              user_id=current_user.id
                               )
             db.session.add(new_game)
             db.session.commit()
@@ -75,20 +81,25 @@ def add_game():
 @login_required
 def delete_game():
     game = request.get_json()
+    print(game)
     game_id = game['game_id']
+    req_loc = game['req_loc']
     game = MyGame.query.get(game_id)
 
-    if game:
-        if game.user_id == current_user.id:
-            db.session.delete(game)
-            db.session.commit()
-            flash("Game successfully deleted", category='success')
-            return make_response("Success", 204)
-        else:
-            flash("Not authorized to delete this game!", category='error')
-    else:
+    if not game:
         flash("Game not in your collection and unable to be deleted", category='error')
+        return make_response("Error", 400)    
+
+    if game.user_id == current_user.id:
+        db.session.delete(game)
+        db.session.commit()
+
+        if req_loc != '/':
+            flash("Game successfully deleted", category='success')
+
+        return make_response("Success", 204)
+    else:
+        flash("Not authorized to delete this game!", category='error')
+        
 
     return make_response("Error", 400)
-
-    

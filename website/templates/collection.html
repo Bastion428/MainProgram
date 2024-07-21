@@ -22,7 +22,9 @@
         </form></td>
             <td>{{ game.year }}</td>
             <td>{{ game.platform }}</td>
-            <td id="delete"><button id="delete-button" onclick="deleteGame({{ game.id }})"><i class="bi bi-trash"></i></button></td>
+            <td id="delete">
+                <button id="delete-button" onclick="deleteGame('{{ game.id }}', '{{ url_for(request.endpoint, **request.view_args) }}')">
+                <i class="bi bi-trash"></i></button></td>
             <td id="edit"><button id="edit-button" onclick=""><i class="bi bi-pencil"></i></button></td>
         </tr>
         {% endfor %}
