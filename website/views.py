@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
@@ -9,6 +9,7 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def collection():
+    print("In collection")
     return render_template('collection.html')
 
 
@@ -23,7 +24,7 @@ def my_game():
     game = MyGame.query.get(game_id)
 
     if current_user.id != game.user_id:
-        flash('You are not authorized to view this game.', category='error')
+        flash('You are not authorized to view this game page.', category='error')
         return redirect(url_for('views.collection'))
 
     return render_template('my_game.html', game=game)
@@ -69,3 +70,20 @@ def add_game():
             return redirect(url_for("views.collection"))
 
     return render_template('add_game.html')
+
+
+@views.route('/delete-game', methods=["DELETE"])
+@login_required
+def delete_game():
+    game = request.get_json()
+    game_id = game['game_id']
+    game = MyGame.query.get(game_id)
+
+    if game:
+        if game.user_id == current_user.id:
+            db.session.delete(game)
+            db.session.commit()
+            return make_response("Success", 204)
+        return make_response("Error", 400)
+
+    

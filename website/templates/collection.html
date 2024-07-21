@@ -2,7 +2,7 @@
 {% block title %}Collection{% endblock %}
 {% block content %}
 <h1>This is the collection page</h1>
-<table id="my_games_table">
+<table id="my_games_table" class="table table-success table-hover table-striped table-bordered table-sm" align="center">
     <thead>
         <tr>
             <th>Title</th>
@@ -11,9 +11,9 @@
             <th>Delete</th>
             <th>Edit</th>
     </thead>
-    <tbody>
+    <tbody class="table-group-divider">
         {% for game in current_user.games %}
-        <tr data-value="">      
+        <tr data-value={{ game.id }}>      
         <td><form method="post" action="/my-game" class="inline">
             <input type="hidden" name="id" value={{ game.id }}>
             <button type="submit" value="submit_value" class="link-button">
@@ -22,8 +22,8 @@
         </form></td>
             <td>{{ game.year }}</td>
             <td>{{ game.platform }}</td>
-            <td><button id="delete-button" onclick=""><i class="bi bi-trash"></i></button></td>
-            <td><button id="edit-button" onclick=""><i class="bi bi-pencil"></i></button></td>
+            <td id="delete"><button id="delete-button" onclick="deleteGame({{ game.id }})"><i class="bi bi-trash"></i></button></td>
+            <td id="edit"><button id="edit-button" onclick=""><i class="bi bi-pencil"></i></button></td>
         </tr>
         {% endfor %}
     </tbody>

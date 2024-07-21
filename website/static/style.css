@@ -17,3 +17,12 @@
   .link-button:active {
     color:red;
   }
+
+td, thead {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#my_games_table {
+  width: 70%;
+}
