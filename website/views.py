@@ -9,13 +9,12 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def collection():
-    print("In collection")
     return render_template('collection.html')
 
 
-@views.route('/my-game', methods=["GET", "POST"])
+@views.route('/my-game/<title>', methods=["GET", "POST"])
 @login_required
-def my_game():
+def my_game(title):
     if request.method == "GET":
         flash('No game has been specified. Please choose one from your collection.', category='error')
         return redirect(url_for('views.collection'))
