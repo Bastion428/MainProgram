@@ -12,20 +12,18 @@ def collection():
     return render_template('collection.html')
 
 
-@views.route('/my-game/<title>', methods=["GET", "POST"])
+@views.route('/my-game/<title>', methods=["POST"])
 @login_required
 def my_game(title):
-    if request.method == "GET":
-        flash('Please choose a game directly from your collection.', category='error')
-        return redirect(url_for('views.collection'))
-    
-    if request.content_type == "application/json; charset=utf-8":
-        game = request.get_json()
-        game_id = game['game_id']
-    else:
-        game_id = request.form.get('id')
+    game_id = request.form.get('id')
+    if not game_id:
+        game_id = request.form.get('auto_id')
         
     game = MyGame.query.get(game_id)
+
+    if not game:
+        flash('Not an existing game.', category='error')
+        return redirect(url_for('views.collection'))
         
     if current_user.id != game.user_id:
         flash('You are not authorized to view this game page.', category='error')
@@ -89,9 +87,10 @@ def search_game():
     results = MyGame.query.filter(MyGame.title.contains(query), MyGame.user_id == current_user.id)
 
     suggestions = []
-
     for game in results:
         suggestions.append({ 'value': game.title, 'data': game.id })
+    
+    print(suggestions)
 
     return jsonify({"suggestions":suggestions})
 

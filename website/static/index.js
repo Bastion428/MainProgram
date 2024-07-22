@@ -43,30 +43,21 @@ function deleteRow(ID){
 	}
 }
 
+function searchInput() {
+	let form = document.getElementById("auto_submit");
+	let title = document.getElementById("autocomplete").value;
+	form.action = `/my-game/${title}`
+}
+
 $(function autoComplete() {
 	$('#autocomplete').autocomplete({
 		serviceUrl: '/search',
 		datatype: 'json',
 		onSelect: function (suggestion) {
-			let data = {
-				game_id: suggestion.data
-			};
-
 			let form = document.getElementById("auto_submit");
-			form.action = `/my-games/${suggestion.value}`
-			document.getElementById("autocomplete").value = suggestion.data
+			form.action = `/my-game/${suggestion.value}`
+			document.getElementById("auto_id").value = suggestion.data
 			form.submit();
-
-			/*$.ajax({
-				url: `/my-game/${suggestion.value}`,
-				type: 'POST',
-				data: JSON.stringify(data),
-				contentType: "application/json; charset=utf-8",
-				success: function(result) {
-					thing = document.getElementById("autocomplete").value
-					console.log(thing)
-				}
-				});*/
 		}
 	  });
 })
