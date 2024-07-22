@@ -25,20 +25,48 @@ function deleteGame(ID, location) {
   }
 
 
-  function deleteRow(ID){
-    /*
-      Deletes row with the given clientID from the Clients UI table
-    */
-    let table = document.getElementById("my_games_table");
-  
-    if (table === null) {
-        window.location.href = "/";
-    }
-    for (let i = 0, row; row = table.rows[i]; i++) {
-      // Looks through Clients UI table for row with matching clientID
-        if (table.rows[i].getAttribute("data-value") == ID) {
-            table.deleteRow(i);
-            break;
-      }
-    }
-  }
+function deleteRow(ID){
+	/*
+	Deletes row with the given clientID from the Clients UI table
+	*/
+	let table = document.getElementById("my_games_table");
+
+	if (table === null) {
+		window.location.href = "/";
+	}
+	for (let i = 0, row; row = table.rows[i]; i++) {
+	// Looks through Clients UI table for row with matching clientID
+		if (table.rows[i].getAttribute("data-value") == ID) {
+			table.deleteRow(i);
+			break;
+		}
+	}
+}
+
+$(function autoComplete() {
+	$('#autocomplete').autocomplete({
+		serviceUrl: '/search',
+		datatype: 'json',
+		onSelect: function (suggestion) {
+			let data = {
+				game_id: suggestion.data
+			};
+
+			let form = document.getElementById("auto_submit");
+			form.action = `/my-games/${suggestion.value}`
+			document.getElementById("autocomplete").value = suggestion.data
+			form.submit();
+
+			/*$.ajax({
+				url: `/my-game/${suggestion.value}`,
+				type: 'POST',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8",
+				success: function(result) {
+					thing = document.getElementById("autocomplete").value
+					console.log(thing)
+				}
+				});*/
+		}
+	  });
+})

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response
+from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response, jsonify, session
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
@@ -18,10 +18,15 @@ def my_game(title):
     if request.method == "GET":
         flash('Please choose a game directly from your collection.', category='error')
         return redirect(url_for('views.collection'))
-
-    game_id = request.form.get('id')
+    
+    if request.content_type == "application/json; charset=utf-8":
+        game = request.get_json()
+        game_id = game['game_id']
+    else:
+        game_id = request.form.get('id')
+        
     game = MyGame.query.get(game_id)
-
+        
     if current_user.id != game.user_id:
         flash('You are not authorized to view this game page.', category='error')
         return redirect(url_for('views.collection'))
@@ -77,11 +82,24 @@ def add_game():
     return render_template('add_game.html')
 
 
+@views.route('/search')
+@login_required
+def search_game():
+    query = request.args.get('query')
+    results = MyGame.query.filter(MyGame.title.contains(query), MyGame.user_id == current_user.id)
+
+    suggestions = []
+
+    for game in results:
+        suggestions.append({ 'value': game.title, 'data': game.id })
+
+    return jsonify({"suggestions":suggestions})
+
+
 @views.route('/delete-game', methods=["DELETE"])
 @login_required
 def delete_game():
     game = request.get_json()
-    print(game)
     game_id = game['game_id']
     req_loc = game['req_loc']
     game = MyGame.query.get(game_id)

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ game.title }}{% endblock %}
 {% block content %}
+<div id="bulk_detail">
 <h1 align="center">{{ game.title }}</h1>
 <table id="detail_games_table" class="table table-success table-bordered table-sm" align="center">
     <thead>
@@ -31,4 +32,5 @@
 </table>
 <button id="delete-button" onclick="deleteGame('{{ game.id }}', '{{ url_for(request.endpoint, **request.view_args) }}')">
     <i class="bi bi-trash"></i></button>
+</div>
 {% endblock %}
