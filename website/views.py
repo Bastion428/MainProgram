@@ -42,10 +42,7 @@ def collection():
 @views.route('/my-game/<title>', methods=["POST"])
 @login_required
 def my_game(title):
-    game_id = request.form.get('id')
-    if not game_id:
-        game_id = request.form.get('auto_id')
-        
+    game_id = request.form.get('id')   
     game = MyGame.query.get(game_id)
 
     if not game:
@@ -83,6 +80,33 @@ def add_game():
     return render_template('add_game.html')
 
 
+@views.route('/edit-game/<title>', methods=["POST"])
+@login_required
+def edit_game(title):
+    return render_template('edit_game.html')
+
+@views.route('/update', methods=["PUT"])
+@login_required
+def update_game(title):
+    game = request.get_json()
+    game_id = game['game_id']
+    req_loc = game['req_loc']
+        
+    game = MyGame.query.get(game_id)
+
+    if not game:
+        flash("Game not in your collection and unable to be edited", category='error')
+        return "Error", 400    
+
+    if not game:
+        flash('Not an existing game.', category='error')
+        return redirect(url_for('views.collection'))
+        
+    return render_template('edit_game.html')
+
+
+
+
 @views.route('/search')
 @login_required
 def search_game():
@@ -115,9 +139,9 @@ def delete_game():
         if req_loc != '/':
             flash("Game successfully deleted", category='success')
 
-        return make_response("Success", 204)
+        return "Success", 204
     else:
         flash("Not authorized to delete this game!", category='error')
         
 
-    return make_response("Error", 400)
+    return "Error", 400
