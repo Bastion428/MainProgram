@@ -23,7 +23,11 @@
             <td>{{ game.developer }}</td>
             <td>{{ game.publisher }}</td>
             <td>{{ game.play_hours }}</td>
+            {% if game.score != "" %}
             <td>{{ game.score }}/10</td>
+            {% else %}
+            <td></td>
+            {% endif %}
             <td>{{ game.own }}</td>
             <td>{{ game.beat }}</td>
             <td>{{ game.review }}</td>
