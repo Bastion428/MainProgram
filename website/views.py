@@ -2,8 +2,17 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
+from werkzeug.datastructures import ImmutableMultiDict
 
 views = Blueprint('views', __name__)
+
+
+def game_dictionary(form: ImmutableMultiDict):
+    game_dict = {}
+    for key in form:
+        game_dict[key] = form.get(key)
+    return game_dict
+
 
 def new_game(game_info: dict):
     new_game = MyGame(title=game_info['title'], 
@@ -49,21 +58,12 @@ def my_game(title):
 
     return render_template('my_game.html', game=game)
 
+
 @views.route('/add-game', methods=["GET", "POST"])
 @login_required
 def add_game():
     if request.method == 'POST':
-        game_info = {}
-        game_info['title'] = request.form.get('title')
-        game_info['year'] = request.form.get('year')
-        game_info['platform'] = request.form.get('platform')
-        game_info['developer'] = request.form.get('developer')
-        game_info['publisher'] = request.form.get('publisher')
-        game_info['hours'] = request.form.get('hours')
-        game_info['score'] = request.form.get('score')
-        game_info['own'] = request.form.get('own')
-        game_info['beat'] = request.form.get('beat')
-        game_info['review'] = request.form.get('review')
+        game_info = game_dictionary(request.form)
 
         game = MyGame.query.filter_by(title=game_info['title'],
                                       year=game_info['year'],
@@ -71,8 +71,9 @@ def add_game():
                                       user_id=current_user.id
                                       ).first()
 
-        game_info['own'] = True if game_info['own'] else False
-        game_info['beat'] = True if game_info['beat'] else False
+        game_info['own'] = True if 'own' in game_info else False
+        game_info['beat'] = True if 'beat' in game_info else False
+        print(game_info)
 
         if game:
             flash('Game already in your collection', category='error')
