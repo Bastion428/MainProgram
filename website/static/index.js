@@ -43,15 +43,9 @@ function deleteRow(ID){
 	}
 }
 
-function searchInput() {
-	let form = document.getElementById("auto_submit");
-	let title = document.getElementById("autocomplete").value;
-	form.action = `/my-game/${title}`
-}
-
 $(function autoComplete() {
 	$('#autocomplete').autocomplete({
-		serviceUrl: '/search',
+		serviceUrl: 'http://127.0.0.1:5000/search',
 		datatype: 'json',
 		onSelect: function (suggestion) {
 			let form = document.getElementById("auto_submit");
