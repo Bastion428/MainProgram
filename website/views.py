@@ -1,9 +1,27 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response, jsonify, session
+from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response, jsonify
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
 
 views = Blueprint('views', __name__)
+
+def new_game(game_info: dict):
+    new_game = MyGame(title=game_info['title'], 
+                    year=game_info['year'],
+                    platform=game_info['platform'], 
+                    developer=game_info['developer'],
+                    publisher=game_info['publisher'], 
+                    play_hours=game_info['hours'],
+                    score=game_info['score'], 
+                    own=game_info['own'], 
+                    beat=game_info['beat'],
+                    review=game_info['review'], 
+                    user_id=current_user.id
+                    )
+    db.session.add(new_game)
+    db.session.commit()
+    flash('Game added to your collection!', category='success')
+    return redirect(url_for("views.collection"))
 
 
 @views.route('/')
@@ -35,47 +53,31 @@ def my_game(title):
 @login_required
 def add_game():
     if request.method == 'POST':
-        title = request.form.get('title')
-        year = request.form.get('year')
-        platform = request.form.get('platform')
-        developer = request.form.get('developer')
-        publisher = request.form.get('publisher')
-        hours = request.form.get('hours')
-        score = request.form.get('score')
-        own = request.form.get('own')
-        beat = request.form.get('beat')
-        review = request.form.get('review')
-        error = False
+        game_info = {}
+        game_info['title'] = request.form.get('title')
+        game_info['year'] = request.form.get('year')
+        game_info['platform'] = request.form.get('platform')
+        game_info['developer'] = request.form.get('developer')
+        game_info['publisher'] = request.form.get('publisher')
+        game_info['hours'] = request.form.get('hours')
+        game_info['score'] = request.form.get('score')
+        game_info['own'] = request.form.get('own')
+        game_info['beat'] = request.form.get('beat')
+        game_info['review'] = request.form.get('review')
 
-        game = MyGame.query.filter_by(title=title,
-                                      year=year,
-                                      platform=platform,
+        game = MyGame.query.filter_by(title=game_info['title'],
+                                      year=game_info['year'],
+                                      platform=game_info['platform'],
                                       user_id=current_user.id
                                       ).first()
 
-        own = True if own else False
-        beat = True if beat else False
+        game_info['own'] = True if game_info['own'] else False
+        game_info['beat'] = True if game_info['beat'] else False
 
         if game:
             flash('Game already in your collection', category='error')
-            error = True
-        if not error:
-            new_game = MyGame(title=title, 
-                              year=year,
-                              platform=platform, 
-                              developer=developer,
-                              publisher=publisher, 
-                              play_hours=hours,
-                              score=score, 
-                              own=own, 
-                              beat=beat,
-                              review=review, 
-                              user_id=current_user.id
-                              )
-            db.session.add(new_game)
-            db.session.commit()
-            flash('Game added to your collection!', category='success')
-            return redirect(url_for("views.collection"))
+        else:
+            return new_game(game_info)
 
     return render_template('add_game.html')
 
@@ -89,8 +91,6 @@ def search_game():
     suggestions = []
     for game in results:
         suggestions.append({ 'value': game.title, 'data': game.id })
-    
-    print(suggestions)
 
     return jsonify({"suggestions":suggestions})
 
