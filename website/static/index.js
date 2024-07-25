@@ -50,7 +50,7 @@ $(function autoComplete() {
 		onSelect: function (suggestion) {
 			let form = document.getElementById("auto_submit");
 			form.action = `/my-game/${suggestion.value}`
-			document.getElementById("auto_id").value = suggestion.data
+			document.getElementById("id").value = suggestion.data
 			form.submit();
 		}
 	  });
