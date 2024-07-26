@@ -25,13 +25,25 @@
               <div class="navbar-nav mx-auto">
                 <a class="nav-link pe-3 active" aria-current="page" href="/">Collection</a>
                 <a class="nav-link pe-3" href="/add-game">Add</a>
-                <a class="nav-link pe-3" href="#">Edit</a>
                 <a class="nav-link pe-4" href="/logout">Logout</a>
                 <form class="d-flex" method="post" action="" class="inline" id="auto_submit">
                   <input type="text" placeholder="Search and select game" autocomplete="off" name="autocomplete" id="autocomplete"
                   onkeydown="return event.key != 'Enter';">
                   <input type="hidden" name="id" id="auto_id">
                 </form>
+                <script>
+                  $('#autocomplete').autocomplete({
+                      serviceUrl: '/search',
+                      datatype: 'json',
+                      onSelect: function (suggestion) {
+                        let form = document.getElementById("auto_submit");
+                        form.action = `/my-game/${suggestion.value}`
+                        document.getElementById("auto_id").value = suggestion.data
+                        form.submit();
+                      }
+                  });
+                </script>
+
               </div>
             </div>
           </div>
