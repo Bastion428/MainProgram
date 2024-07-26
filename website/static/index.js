@@ -1,7 +1,56 @@
+let updateGameForm = document.getElementById('edit-game-form');
+
+updateGameForm.addEventListener("submit", function (e) {
+   
+    e.preventDefault();
+
+	let link = '/update';
+
+	let inputID = document.getElementById("id").value;
+    let inputTitle = document.getElementById("title").value;
+    let inputYear = document.getElementById("year").value;
+    let inputPlatform = document.getElementById("platform").value;
+    let inputDeveloper = document.getElementById("developer").value;
+    let inputPublisher = document.getElementById("publisher").value;
+    let inputHours = document.getElementById("hours").value;
+    let inputScore = document.getElementById("score").value;
+    let inputOwn = document.getElementById("own-edit").value;
+	let inputBeat = document.getElementById("beat-edit").value;
+    let inputReview = document.getElementById("review").value;
+
+	console.log(inputTitle);
+
+    let data = {
+		id: inputID,
+        title: inputTitle,
+        year: inputYear,
+        platform: inputPlatform,
+        developer: inputDeveloper,
+        publisher: inputPublisher,
+        play_hours: inputHours,
+        score: inputScore,
+        own: inputOwn,
+		beat: inputBeat,
+		review: inputReview
+    };
+    
+
+	$.ajax({
+		url: link,
+		type: 'PUT',
+		data: JSON.stringify(data),
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		success: function(result) {
+			console.log(inputOwn);
+			window.location.href = '/';
+		}
+	});
+
+})
+
+
 function deleteGame(ID, location) {
-    /*
-      Deletes the client with the given ID (clientID) from the database and Clients table
-    */
     let link = '/delete-game';
     let data = {
       game_id: ID,
@@ -26,32 +75,15 @@ function deleteGame(ID, location) {
 
 
 function deleteRow(ID){
-	/*
-	Deletes row with the given clientID from the Clients UI table
-	*/
 	let table = document.getElementById("my_games_table");
 
 	if (table === null) {
 		window.location.href = "/";
 	}
 	for (let i = 0, row; row = table.rows[i]; i++) {
-	// Looks through Clients UI table for row with matching clientID
 		if (table.rows[i].getAttribute("data-value") == ID) {
 			table.deleteRow(i);
 			break;
 		}
 	}
 }
-
-$(function autoComplete() {
-	$('#autocomplete').autocomplete({
-		serviceUrl: 'http://127.0.0.1:5000/search',
-		datatype: 'json',
-		onSelect: function (suggestion) {
-			let form = document.getElementById("auto_submit");
-			form.action = `/my-game/${suggestion.value}`
-			document.getElementById("auto_id").value = suggestion.data
-			form.submit();
-		}
-	  });
-})
