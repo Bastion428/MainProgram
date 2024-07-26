@@ -13,7 +13,7 @@
             <th>Hours Played</th>
             <th>Score</th>
             <th>Own</th>
-            <th>Beaten</th>
+            <th>Beat</th>
             <th>Review</th>
     </thead>
     <tbody>
@@ -28,13 +28,26 @@
             {% else %}
             <td></td>
             {% endif %}
-            <td>{{ game.own }}</td>
-            <td>{{ game.beat }}</td>
+            {% if game.own %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+            {% if game.beat %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
             <td>{{ game.review }}</td>
         </tr>
     </tbody>
 </table>
 <button id="delete-button" onclick="deleteGame('{{ game.id }}', '{{ url_for(request.endpoint, **request.view_args) }}')">
-    <i class="bi bi-trash"></i></button>
+    <i class="bi bi-trash"></i>
+</button>
+<form method="post" action="{{ url_for('views.view_edit', title=game.title ) }}" class="inline">
+    <input type="hidden" name="id" value='{{ game.id }}'>
+    <button id="edit-button" type="submit" value="submit_value"><i class="bi bi-pencil"></i></button>
+</form>
 </div>
 {% endblock %}
