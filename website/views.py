@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
 from werkzeug.datastructures import ImmutableMultiDict
+from sqlalchemy.dialects import postgresql
 
 views = Blueprint('views', __name__)
 
@@ -11,6 +12,10 @@ def game_dictionary(form: ImmutableMultiDict):
     game_dict = {}
     for key in form:
         game_dict[key] = form.get(key)
+
+    game_dict['own'] = True if game_dict['own'] == 'Yes' else False
+    game_dict['beat'] = True if game_dict['beat'] == 'Yes' else False
+
     return game_dict
 
 
@@ -50,7 +55,7 @@ def my_game(title):
         return redirect(url_for('views.collection'))
         
     if current_user.id != game.user_id:
-        flash('You are not authorized to view this game page.', category='error')
+        flash('Not authorized to view this game page.', category='error')
         return redirect(url_for('views.collection'))
 
     return render_template('my_game.html', game=game)
@@ -68,10 +73,6 @@ def add_game():
                                       user_id=current_user.id
                                       ).first()
 
-        game_info['own'] = True if 'own' in game_info else False
-        game_info['beat'] = True if 'beat' in game_info else False
-        print(game_info)
-
         if game:
             flash('Game already in your collection', category='error')
         else:
@@ -82,29 +83,50 @@ def add_game():
 
 @views.route('/edit-game/<title>', methods=["POST"])
 @login_required
-def edit_game(title):
-    return render_template('edit_game.html')
+def view_edit(title):
+    game_id = request.form.get('id')   
+    game = MyGame.query.get(game_id)
+
+    if game.user_id != current_user.id:
+        flash("Not authorized to edit this game!", category='error')
+        return redirect(url_for('views.collection'))
+
+    if not game:
+        flash("Game not in your collection and unable to be edited", category='error')
+        return redirect(url_for('views.collection'))   
+
+    return render_template('edit_game.html', game=game)
+    
+
 
 @views.route('/update', methods=["PUT"])
 @login_required
-def update_game(title):
-    game = request.get_json()
-    game_id = game['game_id']
-    req_loc = game['req_loc']
-        
+def edit_game():
+    game_dict = request.get_json()
+    game_id = game_dict['id']
+    print(game_dict)
+
+    game_dict['own'] = True if game_dict['own'] == 'Yes' else False
+    game_dict['beat'] = True if game_dict['beat'] == 'Yes' else False
+
     game = MyGame.query.get(game_id)
 
     if not game:
         flash("Game not in your collection and unable to be edited", category='error')
-        return "Error", 400    
+        return {}, 400
 
-    if not game:
-        flash('Not an existing game.', category='error')
-        return redirect(url_for('views.collection'))
-        
-    return render_template('edit_game.html')
+    if game.user_id != current_user.id:
+        flash("Not authorized to edit this game!", category='error')
+        return {}, 400
+    
+    del game_dict['id']
+    MyGame.query.filter(MyGame.id == game_id).update(game_dict)
+    db.session.commit()
 
-
+    print("in the update route")
+    flash("Game successfully updated!", category='success')
+    
+    return {}, 200
 
 
 @views.route('/search')
@@ -112,6 +134,8 @@ def update_game(title):
 def search_game():
     query = request.args.get('query')
     results = MyGame.query.filter(MyGame.title.contains(query), MyGame.user_id == current_user.id)
+
+    #print(results.statement.compile(compile_kwargs={"literal_binds": True}))
 
     suggestions = []
     for game in results:
@@ -138,10 +162,8 @@ def delete_game():
 
         if req_loc != '/':
             flash("Game successfully deleted", category='success')
-
-        return "Success", 204
+        return {}, 204
     else:
         flash("Not authorized to delete this game!", category='error')
         
-
-    return "Error", 400
+    return {}, 400
