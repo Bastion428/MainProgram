@@ -13,9 +13,9 @@
     </thead>
     <tbody class="table-group-divider">
         {% for game in current_user.games %}
-        <tr data-value={{ game.id }}>      
+        <tr data-value='{{ game.id }}'>      
         <td><form method="post" action="{{ url_for('views.my_game', title=game.title ) }}" class="inline">
-            <input type="hidden" name="id" value={{ game.id }}>
+            <input type="hidden" name="id" value='{{ game.id }}'>
             <button type="submit" value="submit_value" class="link-button">
             {{ game.title }}
             </button>
@@ -24,8 +24,14 @@
             <td>{{ game.platform }}</td>
             <td id="delete">
                 <button id="delete-button" onclick="deleteGame('{{ game.id }}', '{{ url_for(request.endpoint, **request.view_args) }}')">
-                <i class="bi bi-trash"></i></button></td>
-            <td id="edit"><button id="edit-button" onclick=""><i class="bi bi-pencil"></i></button></td>
+                <i class="bi bi-trash"></i></button>
+            </td>
+            <td id="edit">
+                <form method="post" action="{{ url_for('views.view_edit', title=game.title ) }}" class="inline">
+                    <input type="hidden" name="id" value='{{ game.id }}'>
+                    <button id="edit-button" type="submit" value="submit_value"><i class="bi bi-pencil"></i></button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
