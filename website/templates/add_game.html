@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Add game{% endblock %}
 {% block content %}
-<h1 align="center" class="py-5">Add Game</h1>
+<h1 align="center" class="page-title py-5">Add Game</h1>
 <form id="add-game-form" method="POST">
     <div class="row">
         <div class="form-group col">
@@ -50,6 +50,15 @@
         </div>
     </div>
 
+    <div class="row"row>
+        <div class="form-group form col">
+            <label for="image">Box Art: </label>
+            <input type="text" class="form-control mb-4" name="image" id="image" 
+            placeholder="External image url. Will be presented in 400x600.">
+        </div>
+    </div>
+
+
 
     <div class="form-group form-check-inline">
         <label for="own">Own:</label>
@@ -74,4 +83,6 @@
 
     <input type="submit" value="Add">
 </form>
+<p>&nbsp;</p>
+<p><b class="page-title">*</b><b>- required</b></p>
 {% endblock %}
