@@ -5,6 +5,8 @@ from . import db
 from werkzeug.datastructures import ImmutableMultiDict
 from sqlalchemy.dialects import postgresql
 
+NO_IMAGE = "https://rpvalleyradiologists.com/wp-content/uploads/2021/06/no-image-available-sm.jpg"
+
 views = Blueprint('views', __name__)
 
 
@@ -20,10 +22,16 @@ def game_dictionary(form: ImmutableMultiDict):
 
 
 def new_game(game_info: dict):
+    if not game_info['image']:
+        image = NO_IMAGE
+    else:
+        image = game_info['image']
+
     new_game = MyGame(title=game_info['title'], 
                     year=game_info['year'],
                     platform=game_info['platform'], 
                     developer=game_info['developer'],
+                    image = image,
                     publisher=game_info['publisher'], 
                     play_hours=game_info['hours'],
                     score=game_info['score'], 
@@ -42,6 +50,11 @@ def new_game(game_info: dict):
 @login_required
 def collection():
     return render_template('collection.html')
+
+@views.route('/help')
+@login_required
+def help():
+    return render_template('help.html')
 
 
 @views.route('/my-game/<title>', methods=["POST"])
@@ -87,6 +100,9 @@ def view_edit(title):
     game_id = request.form.get('id')   
     game = MyGame.query.get(game_id)
 
+    if game.image == NO_IMAGE:
+        game.image = ""
+
     if game.user_id != current_user.id:
         flash("Not authorized to edit this game!", category='error')
         return redirect(url_for('views.collection'))
@@ -109,23 +125,32 @@ def edit_game():
     game_dict['own'] = True if game_dict['own'] == 'Yes' else False
     game_dict['beat'] = True if game_dict['beat'] == 'Yes' else False
 
+    if 'image' not in game_dict or game_dict['image'] == "":
+        game_dict['image'] = NO_IMAGE
+
     game = MyGame.query.get(game_id)
 
+    game_exists = MyGame.query.filter(MyGame.id != game_id, 
+                                MyGame.title==game_dict['title'],
+                                MyGame.year==game_dict['year'],
+                                MyGame.platform==game_dict['platform'],
+                                MyGame.user_id==current_user.id
+                                ).first()
+
     if not game:
-        flash("Game not in your collection and unable to be edited", category='error')
-        return {}, 400
+        return "Game not in your collection and unable to be edited", 401
+    
+    if game_exists:
+        return "Game already exists in your collection! Edit title, release year, or platform.", 400
 
     if game.user_id != current_user.id:
-        flash("Not authorized to edit this game!", category='error')
-        return {}, 400
+        return "Not authorized to edit this game!", 401
     
     del game_dict['id']
     MyGame.query.filter(MyGame.id == game_id).update(game_dict)
     db.session.commit()
 
-    print("in the update route")
     flash("Game successfully updated!", category='success')
-    
     return {}, 200
 
 
