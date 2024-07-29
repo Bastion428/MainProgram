@@ -130,3 +130,16 @@ h1 {
 .help-page {
   font-size: 20px;
 }
+
+#game-coll {
+  font-size: 70px;
+}
+
+.submit-login {
+  text-align: center;
+}
+
+.entice {
+  padding-top: 70px;
+  text-align: center;
+}
