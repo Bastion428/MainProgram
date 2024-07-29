@@ -12,9 +12,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.2.26/jquery.autocomplete.min.js"></script>     
     </head>
-    <body>
+    <body id="main-body">
         {% if current_user.is_authenticated %}
-        <nav class="navbar sticky-top navbar-expand-lg bg-dark-subtle">
+        <nav class="navbar sticky-top navbar-expand-lg" style="background-color: #C1D6CC">
           <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
@@ -25,6 +25,7 @@
               <div class="navbar-nav mx-auto">
                 <a class="nav-link pe-3 active" aria-current="page" href="/">Collection</a>
                 <a class="nav-link pe-3" href="/add-game">Add</a>
+                <a class="nav-link pe-3" href="/help">Help</a>
                 <a class="nav-link pe-4" href="/logout">Logout</a>
                 <form class="d-flex" method="post" action="" class="inline" id="auto_submit">
                   <input type="text" placeholder="Search and select game" autocomplete="off" name="autocomplete" id="autocomplete"
