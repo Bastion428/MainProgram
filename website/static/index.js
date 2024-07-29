@@ -64,7 +64,7 @@ function deleteGame(ID, location) {
       req_loc: location
     };
   
-    if (!confirm("Are you sure you want to delete this game?")) {
+    if (!confirm("Are you sure you want to delete this game? This will permanently remove the game from your collection.")) {
         return
     }
   
