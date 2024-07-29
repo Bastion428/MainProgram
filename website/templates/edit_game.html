@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 {% block title %}Edit game{% endblock %}
 {% block content %}
-<h1 align="center" class="py-5">Edit Game</h1>
+<h1 align="center" class="page-title py-5">Edit Game</h1>
 <form id="edit-game-form" method="POST">
     <input type="hidden" name="id" value='{{ game.id }}' id="id">
     <div class="row">
         <div class="form-group col">
             <label for="title">Title*: </label>
-            <input type="text" class="form-control mb-4" name="title" value='{{ game.title }}' id="title" required>
+            <input type="text" class="form-control mb-4" name="title" value='{{ game.title }}' id="title" required
+            onkeydown="return event.key != 'Enter';">
         </div>
     
         <div class="form-group col">
             <label for="year">Release Year*: </label>
-            <input type="number" class="form-control mb-4" name="year" value='{{ game.year }}' id="year" min="1000" required>
+            <input type="number" class="form-control mb-4" name="year" value='{{ game.year }}' id="year" min="1000" required
+            onkeydown="return event.key != 'Enter';">
         </div>
 
         
         <div class="form-group col">
             <label for="platform">Platform*: </label>
-            <input type="text" class="form-control mb-4" name="platform" value='{{ game.platform }}' id="platform" required>
+            <input type="text" class="form-control mb-4" name="platform" value='{{ game.platform }}' id="platform" 
+            onkeydown="return event.key != 'Enter';" required>
         </div>
     </div>
 
@@ -27,12 +30,14 @@
     <div class="row"row>
         <div class="form-group col">
             <label for="developer">Developer: </label>
-            <input type="text" class="form-control mb-4" value='{{ game.developer }}' name="developer" id="developer">
+            <input type="text" class="form-control mb-4" value='{{ game.developer }}' name="developer" id="developer"
+            onkeydown="return event.key != 'Enter';">
         </div>
 
         <div class="form-group col">
             <label for="publisher">Publisher: </label>
-            <input type="text" class="form-control mb-4" value='{{ game.publisher }}' name="publisher" id="publisher">
+            <input type="text" class="form-control mb-4" value='{{ game.publisher }}' name="publisher" id="publisher"
+            onkeydown="return event.key != 'Enter';">
         </div>
     </div>
 
@@ -40,20 +45,30 @@
     <div class="row"row>
         <div class="form-group col">
             <label for="hours">Hours Played: </label>
-            <input type="number" class="form-control mb-4" value='{{ game.play_hours }}' name="hours" id="hours" min="0">
+            <input type="number" class="form-control mb-4" value='{{ game.play_hours }}' name="hours" id="hours" min="0"
+            onkeydown="return event.key != 'Enter';">
         </div>
     
     
     
         <div class="form-group col">
             <label for="score">Score (out of 10): </label>
-            <input type="number" class="form-control mb-4" step="0.5" value='{{ game.score}}' name="score" id="score" min="0" max="10">
+            <input type="number" class="form-control mb-4" step="0.5" value='{{ game.score}}' name="score" id="score" min="0" max="10"
+            onkeydown="return event.key != 'Enter';">
         </div>
     </div>
-    
+
+    <div class="row"row>
+        <div class="form-group col">
+            <label for="image">Box Art: </label>
+            <input type="text" class="form-control mb-4" name="image" id="image" value='{{ game.image }}'
+            placeholder="External image url. Will be presented in 400x600." onkeydown="return event.key != 'Enter';">
+        </div>
+    </div>
+
     <div class="form-group form-check-inline">
         <label for="own">Own:</label>
-        <select name="own" id="own-edit" class="mb-4 mt-3">
+        <select name="own" id="own-edit" class="mb-4 mt-3" onkeydown="return event.key != 'Enter';">
             {% if game.own %}
             <option value="Yes" selected>Yes</option>
             <option value="No">No</option>
@@ -65,7 +80,7 @@
     </div>
     <div class="form-group form-check-inline">
         <label for="beat">Beat:</label>
-        <select name="beat" id="beat-edit" class="mb-4 mt-3">
+        <select name="beat" id="beat-edit" class="mb-4 mt-3" onkeydown="return event.key != 'Enter';">
             {% if game.beat %}
             <option value="Yes" selected>Yes</option>
             <option value="No">No</option>
@@ -83,6 +98,8 @@
     </div>
 
 
-    <input type="submit" value="Update" id="edit-sumbit">
+    <input type="submit" value="Update" id="edit-sumbit" onkeydown="return event.key != 'Enter';">
 </form>
+<p>&nbsp;</p>
+<p><b class="page-title">*</b><b>- required</b></p>
 {% endblock %}
