@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Edit game{% endblock %}
+{% block content %}
+<div class="help-page">
+    <h1 align="center" class="page-title pt-5 pb-4">Help</h1>
+    <ul>
+        <li>To view detailed information on a game, click on its name in the collection page.
+            Alternatively, you can also type the name of the game in the search box and choose the game from the resulting suggestions.
+        </li>
+        <li>To add a game, click the add button on the navigation bar at the top.</li>
+        <li>A game can be edited via either the collection page or its detailed information page by clicking on the edit icon.</li>
+        <li>A game can be deleted via either the collection page or its detailed information page by clicking on the delete icon.</li>
+    </ul>
+    <p>&nbsp;</p>
+    <div class="help-div">
+        <div class="help-icons-email">
+            <div class="edit-help"><button id="edit-button"><i class="bi bi-pencil"></i></button> - Edit Icon</div>
+            <div class="delete-help"><button id="delete-button"><i class="bi bi-trash"></i></button> - Delete Icon</div>
+        </div>
+        <div class="help-icons-email email-help">
+            <p>Send all questions and suggestions to: thegamecollection@gmail.com</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
