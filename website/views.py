@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, make_response, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
@@ -179,7 +179,7 @@ def delete_game():
 
     if not game:
         flash("Game not in your collection and unable to be deleted", category='error')
-        return make_response("Error", 400)    
+        return {}, 400  
 
     if game.user_id == current_user.id:
         db.session.delete(game)
