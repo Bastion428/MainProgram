@@ -2,19 +2,24 @@
 {% block title %}Login{% endblock %}
 {% block content %}
     <form method="POST">
-        <h3 align ="center">Login</h3>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username"
-                   placeholder="Enter username">
+        <h1 align ="center" class="page-title pt-5 pb-1" id="game-coll">The Game Collection</h1>
+        <h3 align ="center" class="page-title pt-5 pb-3">Login</h3>
+        <div class="submit-login">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control-sm mb-4" id="username" name="username"
+                       placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control-sm" id="password" name="password"
+                       placeholder="Enter password">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <br>
+            <a href="/sign-up">Create account</a>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password"
-                   placeholder="Enter password">
-        </div>
-        <br>
-        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <a href="/sign-up">Create account</a>
+    <p class="entice">Track your video game collection!<br> Record the games you own and/or have beaten.</p>
 {% endblock %}
