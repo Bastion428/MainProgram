@@ -31,8 +31,8 @@ updateGameForm.addEventListener("submit", function (e) {
         play_hours: inputHours,
         score: inputScore,
         own: inputOwn,
-    beat: inputBeat,
-    review: inputReview
+        beat: inputBeat,
+        review: inputReview
     };
       
 
@@ -93,4 +93,38 @@ function deleteRow(ID){
             break;
         }
     }
+}
+
+function getSteamInfo() {
+    let link = '/steam-game';
+    let inputID = document.getElementById("steam-id").value;
+    let data = {
+        id: inputID
+    };
+
+
+    $.ajax({
+        url: link,
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        success: function(response) {
+            let inputTitle = document.getElementById("title");
+            let inputYear = document.getElementById("year");
+            let inputPublisher = document.getElementById("publisher");
+            let inputDeveloper = document.getElementById("developer");
+            let inputPlatform = document.getElementById("platform");
+        
+            inputTitle.value = response.title;
+            inputYear.value = response.year;
+            inputDeveloper.value = response.developer;
+            inputPublisher.value = response.publisher;
+            inputPlatform.value = "PC (Steam)";
+        },
+        error: function(request,status,errorThrown) {
+            let result = JSON.parse(request.responseText);
+            alert(`Error (${request.status}): ${result.Error}`);
+       }
+    });
 }
