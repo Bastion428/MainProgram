@@ -4,6 +4,7 @@ from .models import MyGame
 from . import db
 from werkzeug.datastructures import ImmutableMultiDict
 from sqlalchemy.dialects import postgresql
+import requests
 
 NO_IMAGE = "https://rpvalleyradiologists.com/wp-content/uploads/2021/06/no-image-available-sm.jpg"
 
@@ -115,12 +116,11 @@ def view_edit(title):
     
 
 
-@views.route('/update', methods=["PUT"])
+@views.route('/update-game', methods=["PUT"])
 @login_required
 def edit_game():
     game_dict = request.get_json()
     game_id = game_dict['id']
-    print(game_dict)
 
     game_dict['own'] = True if game_dict['own'] == 'Yes' else False
     game_dict['beat'] = True if game_dict['beat'] == 'Yes' else False
@@ -192,3 +192,14 @@ def delete_game():
         flash("Not authorized to delete this game!", category='error')
         
     return {}, 400
+
+
+@views.route('/steam-game')
+@login_required
+def steam_game():
+    req = request.get_json()
+    res = requests.post("http://localhost:6523/steam-search", json=req)
+
+    return res.json()
+
+    

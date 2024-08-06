@@ -4,7 +4,7 @@ updateGameForm.addEventListener("submit", function (e) {
    
     e.preventDefault();
 
-    let link = '/update';
+    let link = '/update-game';
 
     let inputID = document.getElementById("id").value;
     let inputTitle = document.getElementById("title").value;
