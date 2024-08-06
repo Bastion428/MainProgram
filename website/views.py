@@ -187,19 +187,20 @@ def delete_game():
 
         if req_loc != '/':
             flash("Game successfully deleted", category='success')
+            
         return {}, 204
     else:
         flash("Not authorized to delete this game!", category='error')
-        
+
     return {}, 400
 
 
-@views.route('/steam-game')
+@views.route('/steam-game', methods=["POST"])
 @login_required
 def steam_game():
     req = request.get_json()
     res = requests.post("http://localhost:6523/steam-search", json=req)
 
-    return res.json()
+    return res.json(), res.status_code
 
     
