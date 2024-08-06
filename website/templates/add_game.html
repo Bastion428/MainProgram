@@ -2,6 +2,16 @@
 {% block title %}Add game{% endblock %}
 {% block content %}
 <h1 align="center" class="page-title py-5">Add Game</h1>
+
+<div class="steam-group">
+    <label for="steam-id" id="steam-label">Prefill with Steam app ID: </label><br>
+    <input type="number" name="steam-id" id="steam-id">
+    <button id="app-id-btn" onclick="getSteamInfo()">Get Info</i></button>
+</div>
+
+<br>
+
+
 <form id="add-game-form" method="POST">
     <div class="row">
         <div class="form-group col">
