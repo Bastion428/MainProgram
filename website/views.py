@@ -42,6 +42,14 @@ def new_game(game_info: dict):
                     )
     db.session.add(new_game)
     db.session.commit()
+
+    info = { 'email': current_user.email, 
+             'title': game_info['title'],
+             'year': game_info['year'],
+             'platform': game_info['platform']}
+    
+    requests.post("http://localhost:7134/send-add", data=info)
+    
     flash('Game added to your collection!', category='success')
     return redirect(url_for("views.collection"))
 
@@ -200,7 +208,6 @@ def steam_game():
     return res.json(), res.status_code
 
     
-
 @views.route('/csv-export')
 @login_required
 def csv_export():
@@ -209,7 +216,7 @@ def csv_export():
     with open('instance\game_collection.db', 'rb') as database:
         response = requests.post(
             url,
-            data={'fields': 'title,year,platform,developer,publisher,score,play_hours', 'user_id': current_user.id},
+            data={'fields': 'title,year,platform,developer,publisher,score,play_hours,own,beat', 'user_id': current_user.id},
             files={'database': database}
         )
 
