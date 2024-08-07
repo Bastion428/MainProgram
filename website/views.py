@@ -216,7 +216,7 @@ def csv_export():
     with open('instance\game_collection.db', 'rb') as database:
         response = requests.post(
             url,
-            data={'fields': 'title,year,platform,developer,publisher,score,play_hours,own,beat', 'user_id': current_user.id},
+            data={'fields': 'title,year,platform,developer,publisher,score,play_hours,own,beat,review', 'user_id': current_user.id},
             files={'database': database}
         )
 
