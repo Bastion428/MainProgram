@@ -7,7 +7,11 @@
     
     <div class="grid-item1 pt-3 pb-5" style="color: #C1D6CC"><h1><b>{{ game.title }}</b></h1></div>
     <div class="grid-item4">
+        {% if game.image == "" %}
+        <img src="{{ url_for('static', filename='images/no-image-available.jpg') }}" width="400" height="600">
+        {% else %}
         <img src='{{ game.image }}' width="400" height="600">
+        {% endif %}
     </div>
     <div class="grid-item2">
         <p><b class="label-game">Release year:</b> {{ game.year }}</p>

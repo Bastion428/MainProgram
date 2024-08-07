@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, send_file
 from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
 from werkzeug.datastructures import ImmutableMultiDict
 from sqlalchemy.dialects import postgresql
+from io import BytesIO
 import requests
-
-NO_IMAGE = "https://rpvalleyradiologists.com/wp-content/uploads/2021/06/no-image-available-sm.jpg"
 
 views = Blueprint('views', __name__)
 
@@ -24,7 +23,7 @@ def game_dictionary(form: ImmutableMultiDict):
 
 def new_game(game_info: dict):
     if not game_info['image']:
-        image = NO_IMAGE
+        image = ""
     else:
         image = game_info['image']
 
@@ -101,9 +100,6 @@ def view_edit(title):
     game_id = request.form.get('id')   
     game = MyGame.query.get(game_id)
 
-    if game.image == NO_IMAGE:
-        game.image = ""
-
     if game.user_id != current_user.id:
         flash("Not authorized to edit this game!", category='error')
         return redirect(url_for('views.collection'))
@@ -125,8 +121,8 @@ def edit_game():
     game_dict['own'] = True if game_dict['own'] == 'Yes' else False
     game_dict['beat'] = True if game_dict['beat'] == 'Yes' else False
 
-    if 'image' not in game_dict or game_dict['image'] == "":
-        game_dict['image'] = NO_IMAGE
+    if 'image' not in game_dict:
+        game_dict['image'] = ""
 
     game = MyGame.query.get(game_id)
 
@@ -204,3 +200,24 @@ def steam_game():
     return res.json(), res.status_code
 
     
+
+@views.route('/csv-export')
+@login_required
+def csv_export():
+    url = "http://localhost:7003/export-csv"
+
+    with open('instance\game_collection.db', 'rb') as database:
+        response = requests.post(
+            url,
+            data={'fields': 'title,year,platform,developer,publisher,score,play_hours', 'user_id': current_user.id},
+            files={'database': database}
+        )
+
+    if response.status_code == 200:
+        return send_file(BytesIO(response.content), as_attachment=True, download_name='output.csv')
+    else:
+        try:
+            print("Failed to export CSV:", response.json())
+        except requests.exceptions.JSONDecodeError:
+            print("Response content is not valid JSON:", response.content)
+        return response.json(), response.status_code
