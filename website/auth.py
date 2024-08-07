@@ -3,6 +3,7 @@ from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
+import requests
 
 auth = Blueprint('auth', __name__)
 
@@ -13,14 +14,20 @@ def sign_up():
         return redirect(url_for('views.collection'))
 
     if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
         username = request.form.get('username')
         pass1 = request.form.get('password1')
         pass2 = request.form.get('password2')
         error = False
 
         user = User.query.filter_by(username=username).first()
+        user_email = User.query.filter_by(email=email).first()
         if user:
-            flash('Username already is use', category='error')
+            flash('Username already in use', category='error')
+            error = True
+        if user_email:
+            flash('Email already in use', category='error')
             error = True
         if pass1 != pass2:
             flash('Passwords do not match', category='error')
@@ -33,9 +40,13 @@ def sign_up():
             error = True
         if not error:
             password = generate_password_hash(pass1, method='pbkdf2:sha256')
-            new_user = User(username=username, password=password)
+            new_user = User(name=name,email=email,username=username, password=password)
             db.session.add(new_user)
             db.session.commit()
+
+            info = { 'name': name, 'email': email, 'username': username, 'password': pass1}
+            requests.post("http://localhost:7134/send-signup", data=info)
+
             flash('Succesfully created account!', category='success')
             return redirect(url_for('auth.login'))
 
