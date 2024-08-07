@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Collection{% endblock %}
 {% block content %}
-<h1 align="center" class="page-title py-5">Game Collection</h1>
+<h1 align="center" class="page-title pt-5">Game Collection</h1>
+<div align="center">
+    <form method="GET" action="/csv-export" >
+        <input type="submit" class="mt-4 mb-2" value="Export to CSV">
+    </form>
+</div>
 <table id="my_games_table" class="table table-success table-hover table-striped table-bordered table-sm" align="center">
     <thead>
         <tr>
