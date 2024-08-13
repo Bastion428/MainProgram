@@ -46,9 +46,10 @@ updateGameForm.addEventListener("submit", function (e) {
             window.location.href = '/';
         },
         error: function(request,status,errorThrown) {
-            alert(`Error (${request.status}): ${request.responseText}`);
             if (request.status !== 400) {
                 window.location.href = '/';
+            } else {
+                location.reload();
             }
 
        }
