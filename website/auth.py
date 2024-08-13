@@ -3,7 +3,7 @@ from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
-import requests
+import requests, json
 
 auth = Blueprint('auth', __name__)
 
@@ -29,16 +29,16 @@ def sign_up():
         if user_email:
             flash('Email already in use', category='error')
             error = True
-        if pass1 != pass2:
-            flash('Passwords do not match', category='error')
-            error = True
-        if len(pass1) < 6:
-            flash('Password must be 6 characters or more', category='error')
-            error = True
-        if len(username) < 6:
-            flash('Username must be 6 characters or more', category='error')
-            error = True
-        if not error:
+
+        info = { 'name': name, 'email': email, 'username': username, 'pass1': pass1, 'pass2': pass2}
+        res = requests.post("http://localhost:4688/validate-user", data=info)
+
+        message_list = res.json()['messages']
+
+        for message in message_list:
+            flash(message, category='error')
+     
+        if not error and res.status_code == 200:
             password = generate_password_hash(pass1, method='pbkdf2:sha256')
             new_user = User(name=name,email=email,username=username, password=password)
             db.session.add(new_user)
