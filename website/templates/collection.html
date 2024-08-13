@@ -32,7 +32,7 @@
                 <i class="bi bi-trash"></i></button>
             </td>
             <td id="edit">
-                <form method="post" action="{{ url_for('views.view_edit', title=game.title ) }}" class="inline">
+                <form method="POST" action="{{ url_for('views.view_edit', title=game.title ) }}" class="inline">
                     <input type="hidden" name="id" value='{{ game.id }}'>
                     <button id="edit-button" type="submit" value="submit_value"><i class="bi bi-pencil"></i></button>
                 </form>
