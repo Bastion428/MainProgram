@@ -3,12 +3,12 @@ from flask_login import login_required, current_user
 from .models import MyGame
 from . import db
 from werkzeug.datastructures import ImmutableMultiDict
-from sqlalchemy.dialects import postgresql
 from io import BytesIO
 import requests
 
 views = Blueprint('views', __name__)
 
+requests.packages.urllib3.util.connection.HAS_IPV6 = False
 
 def game_dictionary(form: ImmutableMultiDict):
     game_dict = {}
@@ -93,10 +93,18 @@ def add_game():
                                       platform=game_info['platform'],
                                       user_id=current_user.id
                                       ).first()
-
+        
         if game:
             flash('Game already in your collection', category='error')
-        else:
+            return render_template('add_game.html')
+        
+        res = requests.post("http://localhost:4688/validate-game", data=game_info)
+
+        message_list = res.json()['messages']
+        for message in message_list:
+            flash(message, category='error')
+
+        if res.status_code == 200:
             return new_game(game_info)
 
     return render_template('add_game.html')
@@ -117,7 +125,7 @@ def view_edit(title):
         return redirect(url_for('views.collection'))   
 
     return render_template('edit_game.html', game=game)
-    
+
 
 
 @views.route('/update-game', methods=["PUT"])
@@ -142,20 +150,33 @@ def edit_game():
                                 ).first()
 
     if not game:
-        return "Game not in your collection and unable to be edited", 401
+        flash("Game not in your collection and unable to be edited", category='error')
+        return {}, 401
     
     if game_exists:
-        return "Game already exists in your collection! Edit title, release year, or platform.", 400
+        flash("Game already exists in your collection! Edit title, release year, or platform.", category='error')
+        return {}, 400
 
     if game.user_id != current_user.id:
-        return "Not authorized to edit this game!", 401
+        flash("Not authorized to edit this game!", category='error')
+        return {}, 401
     
-    del game_dict['id']
-    MyGame.query.filter(MyGame.id == game_id).update(game_dict)
-    db.session.commit()
+    check_dict = game_dict.copy()
+    check_dict['hours'] = check_dict.pop('play_hours')
+    res = requests.post("http://localhost:4688/validate-game", data=check_dict)
 
-    flash("Game successfully updated!", category='success')
-    return {}, 200
+    message_list = res.json()['messages']
+    for message in message_list:
+        flash(message, category='error')
+        
+    if res.status_code == 200:
+        del game_dict['id']
+        MyGame.query.filter(MyGame.id == game_id).update(game_dict)
+        db.session.commit()
+        flash("Game successfully updated!", category='success')
+        return {}, 200
+    else:
+        return {}, 400
 
 
 @views.route('/search')
@@ -163,8 +184,6 @@ def edit_game():
 def search_game():
     query = request.args.get('query')
     results = MyGame.query.filter(MyGame.title.contains(query), MyGame.user_id == current_user.id)
-
-    #print(results.statement.compile(compile_kwargs={"literal_binds": True}))
 
     suggestions = []
     for game in results:
